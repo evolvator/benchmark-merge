@@ -52,19 +52,6 @@ async.timesSeries(
     (function() {
       var temp = prepare();
       suite.add({
-        name: '__proto__',
-        onCycle: function() {
-          temp = prepare();
-        },
-        fn: function() {
-          temp.a.__proto__ = temp.b;
-        }
-      });
-    })();
-
-    (function() {
-      var temp = prepare();
-      suite.add({
         name: '...spread',
         onCycle: function() {
           temp = prepare();
