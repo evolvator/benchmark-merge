@@ -18,6 +18,7 @@ async.timesSeries(
   function(t, next) {
     var count = Math.pow(2, t);
     var suite = new Benchmark.Suite(`shallow merge object with ${count} size`);
+    
     var prepare = function() {
       return { a: generateObject(count), b: generateObject(count) };
     }
