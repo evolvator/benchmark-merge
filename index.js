@@ -2,59 +2,128 @@ var Benchmark = require('benchmark');
 var tb = require('travis-benchmark');
 var _ = require('lodash');
 var async = require('async');
-var foreach = require('foreach');
+
+var uniqid = require('uniqid');
+
+var generateObject = function(count) {
+  var object = {};
+  for (var i = 0; i < count; i++) {
+    object[uniqid()] = uniqid();
+  }
+  return object;
+};
 
 async.timesSeries(
-  15,
+  10,
   function(t, next) {
     var count = Math.pow(2, t);
-    var suite = new Benchmark.Suite(`${count} object size`);
-
-    var object = {};
-    for (var i = 0; i < count; i++) {
-      object[i] = i;
+    var suite = new Benchmark.Suite(`shallow merge object with ${count} size`);
+    var prepare = function() {
+      return { a: generateObject(count), b: generateObject(count) };
     }
-    
-    var callbackSync = function(value, index) { value; };
-    var callbackAsync = function(value, index, next) {
-      value;
-      next();
-    };
 
-    suite.add('Object.keys for', function() {
-      var array = Object.keys(object);
-      for (var i = 0; i < count; i++) {
-        object[array[i]];
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: 'lodash@4.17.10 assign',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          _.assign(temp.a, temp.b);
+        }
+      });
+    })();
+
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: 'lodash@4.17.10 defaults',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          _.defaults(temp.b, temp.a);
+        }
+      });
+    })();
+
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: '__proto__',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          temp.a.__proto__ = temp.b;
+        }
+      });
+    })();
+
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: '...spread',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          temp.a = { ...temp.a, ...temp.b };
+        }
+      });
+    })();
+
+    (function() {
+      var __assign = (this && this.__assign) || Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+          s = arguments[i];
+          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+        }
+        return t;
       };
-    });
-    suite.add('Object.keys while', function() {
-      var array = Object.keys(object);
-      var i = 0;
-      while (i < count) {
-        object[array[i]];
-        i++;
-      }
-    });
-    suite.add('for-in', function() {
-      for (var i in object) {
-        object[i];
-      }
-    });
-    suite.add('Object.keys forEach', function() {
-      Object.keys(object).forEach(callbackSync);
-    });
-    suite.add('lodash@4.17.10 forEach', function() {
-      _.forEach(object, callbackSync);
-    });
-    suite.add('async@2.6.1 forEachOf', function() {
-      async.forEachOf(object, callbackAsync);
-    });
-    suite.add('async@2.6.1 forEachOfSeries', function() {
-      async.forEachOfSeries(object, callbackAsync);
-    });
-    suite.add('foreach@2.0.5', function() {
-      foreach(object, callbackSync);
-    });
+      
+      var temp = prepare();
+      suite.add({
+        name: 'ts ...spread',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          temp.a = __assign({}, temp.a, temp.b);
+        }
+      });
+    })();
+
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: 'Object.assign',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          Object.assign(temp.a, temp.b);
+        }
+      });
+    })();
+
+    (function() {
+      var temp = prepare();
+      suite.add({
+        name: 'for a[key] = b[key]',
+        onCycle: function() {
+          temp = prepare();
+        },
+        fn: function() {
+          var array = Object.keys(temp.b);
+          for (var i = 0; i < array.length; i++) {
+            temp.a[array[i]] = temp.b[array[i]];
+          }
+        }
+      });
+    })();
 
     tb.wrapSuite(suite, () => next());
     suite.run({ async: true });
