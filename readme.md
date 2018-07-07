@@ -1,6 +1,6 @@
 # benchmark-merge
 
-What's the fastest way to each by object?
+What is the difference between the ways of merging objects of different sizes?
 
 [![Build Status](https://travis-ci.org/evolvator/benchmark-merge.svg?branch=master)](https://travis-ci.org/evolvator/benchmark-merge)
 
