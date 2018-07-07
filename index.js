@@ -21,7 +21,7 @@ async.timesSeries(
     
     var prepare = function() {
       return { a: generateObject(count), b: generateObject(count) };
-    }
+    };
 
     (function() {
       var temp = prepare();
