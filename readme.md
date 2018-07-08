@@ -2,7 +2,7 @@
 
 What is the difference between the ways of merging objects of different sizes?
 
-[![Build Status](https://travis-ci.org/evolvator/benchmark-merge.svg?branch=master)](https://travis-ci.org/evolvator/benchmark-merge)
+[![Build Status](https://travis-ci.org/evolvator/benchmark-merge.svg?branch=code)](https://travis-ci.org/evolvator/benchmark-merge)
 
 [Executable code](https://github.com/evolvator/benchmark-merge/tree/code)
 
