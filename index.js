@@ -240,8 +240,9 @@ async.timesSeries(
         (function() {
           var temp = prepare();
           var keys = Object.keys(temp.b);
-          var Generator = eval(`function() {${keys.map(function(key) {
-            return `this['${key}'] = temp['${key}'];`;
+          var Generator;
+          eval(`Generator = function() {${keys.map(function(key) {
+            return `this['${key}'] = temp.b['${key}'];`;
           }).join('')}}`);
           suite.add({
             name: 'prototype in code',
