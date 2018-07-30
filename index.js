@@ -95,7 +95,7 @@ async.timesSeries(
               var result = new Generator();
               var array = Object.keys(temp.b);
               for (var i = 0; i < array.length; i++) {
-                result[array[i]] = temp.a[array[i]];
+                result[array[i]] = temp.b[array[i]];
               }
             }
           });
@@ -209,7 +209,6 @@ async.timesSeries(
     
         (function() {
           var temp = prepare();
-          var keys = Object.keys(temp.b);
           var Generator = function() {};
           suite.add({
             name: 'prototype outer',
@@ -221,7 +220,7 @@ async.timesSeries(
               var result = new Generator();
               var array = Object.keys(temp.b);
               for (var i = 0; i < array.length; i++) {
-                result[array[i]] = temp.a[array[i]];
+                result[array[i]] = temp.b[array[i]];
               }
             }
           });
@@ -258,7 +257,6 @@ async.timesSeries(
     
         (function() {
           var temp = prepare();
-          var keys = Object.keys(temp.b);
           var Generator = function() {};
           suite.add({
             name: 'prototype outer',
