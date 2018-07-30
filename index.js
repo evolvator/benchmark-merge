@@ -84,6 +84,25 @@ async.timesSeries(
         (function() {
           var temp = prepare();
           var keys = Object.keys(temp.b);
+          var Generator;
+          eval(`Generator = function() {${keys.map(function(key) {
+            return `this['${key}'] = temp.b['${key}'];`;
+          }).join('')}}`);
+          suite.add({
+            name: 'prototype in code',
+            onCycle: function() {
+              temp = prepare();
+            },
+            fn: function() {
+              Generator.prototype = temp.a;
+              var result = new Generator();
+            }
+          });
+        })();
+    
+        (function() {
+          var temp = prepare();
+          var keys = Object.keys(temp.b);
           var Generator = function() {};
           suite.add({
             name: 'prototype outer',
@@ -257,6 +276,7 @@ async.timesSeries(
     
         (function() {
           var temp = prepare();
+          var keys = Object.keys(temp.b);
           var Generator = function() {};
           suite.add({
             name: 'prototype outer',
@@ -268,7 +288,7 @@ async.timesSeries(
               var result = new Generator();
               var array = Object.keys(temp.b);
               for (var i = 0; i < array.length; i++) {
-                result[array[i]] = temp.a[array[i]];
+                result[array[i]] = temp.b[array[i]];
               }
             }
           });
